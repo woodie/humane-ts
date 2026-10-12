@@ -36,4 +36,11 @@ jobs:
       - name: Check the tag matches package.json's version
         run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
       - run: npm ci
+      - name: Check whether this version is already on npm
+        id: published
+        run: |
+          if npm view "humane-ts@$(node -p "require('./package.json').version")" version > /dev/null 2>&1; then
+            echo "already=true" >> "$GITHUB_OUTPUT"
+          fi
       - run: npm publish --access public
+        if: steps.published.outputs.already != 'true'
