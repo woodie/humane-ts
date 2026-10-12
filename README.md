@@ -26,6 +26,12 @@ distanceInTime(mtime, now) // "3 minutes ago" -- explicit relativeTo, for tests
 npm install humane-ts
 ```
 
+To install the latest `main` instead, straight from GitHub (built on install):
+
+```
+npm install github:woodie/humane-ts
+```
+
 ES module only, with TypeScript types included.
 
 ## File sizes

@@ -37,6 +37,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "prepare": "npm run build",
     "lint": "eslint . && tsc --noEmit",
     "test": "vitest run --reporter=tree",
     "check": "eslint . && tsc --noEmit && vitest run --reporter=dot",
