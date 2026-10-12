@@ -38,7 +38,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "lint": "eslint . && tsc --noEmit",
-    "test": "vitest run --reporter=verbose",
+    "test": "vitest run --reporter=tree",
     "check": "eslint . && tsc --noEmit && vitest run --reporter=dot",
     "prepublishOnly": "npm run check && npm run build"
   },
