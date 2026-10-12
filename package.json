@@ -1,0 +1,51 @@
+{
+  "name": "humane-ts",
+  "version": "0.1.0",
+  "description": "File sizes the way macOS Finder shows them, and relative dates in Rails ActionView's wording",
+  "keywords": [
+    "file size",
+    "bytes",
+    "finder",
+    "relative time",
+    "time ago",
+    "actionview",
+    "distance of time in words"
+  ],
+  "license": "MIT",
+  "author": "John Woodell <woodie@netpress.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/woodie/humane-ts.git"
+  },
+  "homepage": "https://github.com/woodie/humane-ts#readme",
+  "bugs": "https://github.com/woodie/humane-ts/issues",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint . && tsc --noEmit",
+    "test": "vitest run --reporter=verbose",
+    "check": "eslint . && tsc --noEmit && vitest run --reporter=dot",
+    "prepublishOnly": "npm run check && npm run build"
+  },
+  "devDependencies": {
+    "eslint": "^10.12.0",
+    "neostandard": "^0.14.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.4"
+  }
+}

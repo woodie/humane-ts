@@ -1,0 +1,119 @@
+# humane-ts
+
+[![npm](https://img.shields.io/npm/v/humane-ts.svg)](https://www.npmjs.com/package/humane-ts)
+[![CI](https://github.com/woodie/humane-ts/actions/workflows/ci.yml/badge.svg)](https://github.com/woodie/humane-ts/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/woodie/humane-ts.svg)](LICENSE)
+
+File sizes that read exactly the way macOS Finder shows them (`"4.1 MB"`,
+`"226 KB"`), and relative dates in Rails ActionView's wording (`"about 3 hours
+ago"`, `"in 3 minutes"`), for TypeScript and JavaScript. No dependencies.
+
+```ts
+import { humanSize, timeAgo, distanceInTime } from 'humane-ts'
+
+humanSize(225_935) // "226 KB"
+
+const mtime = new Date(Date.now() - 180_000)
+timeAgo(mtime) // "3 minutes ago" -- relative to the real clock
+
+const now = new Date()
+distanceInTime(mtime, now) // "3 minutes ago" -- explicit relativeTo, for tests
+```
+
+## Install
+
+```
+npm install humane-ts
+```
+
+ES module only, with TypeScript types included.
+
+## File sizes
+
+`humanSize` matches Foundation's `ByteCountFormatter` (file style), which is
+what macOS Finder shows, and is checked against real Finder output:
+
+- 1000-based units with capitalized labels: `KB`, `MB`, `GB`, `TB`, and up.
+- A fixed number of decimal places per unit -- none for KB, one for MB, two
+  for GB and above -- with trailing zeros dropped (`"2 MB"`, not `"2.0 MB"`).
+- Rounds half up, and moves up a unit when rounding reaches 1000:
+  999,999 bytes is `"1 MB"`, not `"1000 KB"`.
+- Zero bytes is `"Zero KB"`, and anything under 1000 bytes is spelled out
+  (`"1 byte"`, `"7 bytes"`).
+
+```ts
+humanSize(2_579)         // "3 KB"
+humanSize(4_132_383)     // "4.1 MB"
+humanSize(999_999)       // "1 MB"
+humanSize(5_240_000_000) // "5.24 GB"
+```
+
+Popular alternatives like `pretty-bytes` and `filesize` round differently
+(`"4.13 MB"`, `"2.58 kB"`) and label units in SI style (`kB`, `B`), so their
+output won't match what Finder shows.
+
+## `distanceInTime` and `timeAgo`
+
+Two entry points, same naming split as ActionView's own
+`distance_of_time_in_words`/`time_ago_in_words`:
+
+- **`distanceInTime(at, relativeTo, options?)`** -- the explicit,
+  fully-tested core. Takes both times, plus a possibly-null `at`, so it's
+  what tests should call.
+- **`timeAgo(at, options?)`** -- a one-argument convenience for the common
+  "drop into a view" case. Supplies the current time as `relativeTo`.
+
+The wording follows ActionView's `distance_of_time_in_words`, with one
+difference: direction is picked for you. A past time reads `"3 minutes ago"`
+and a future one `"in 3 minutes"`, where ActionView leaves that to the caller.
+
+Both take the same options, with recommended defaults that already match
+ActionView's own -- pass none at all and you get them for free:
+
+```ts
+distanceInTime(at, relativeTo) // { approximate: true, includeSeconds: false }
+timeAgo(at)                    // same defaults, relativeTo is now
+```
+
+- **`approximate`** (default `true`): prefixes `"about"`/`"in about"` on the
+  hour-scale buckets (1 hour, and 2..24 hours), matching ActionView's
+  `distance_of_time_in_words` wording for those buckets exactly (down to its
+  44:30/89:30 rounding cutoffs), through the "1 day" bucket.
+- **`includeSeconds`** (default `false`): under 30 seconds, collapses to
+  `"less than a minute ago"`/`"in less than a minute"` instead of an exact
+  second count. Matches ActionView's `include_seconds` default.
+- **`whenNil`** (default `""`): if `at` is `null` or `undefined`,
+  `distanceInTime` returns this string without formatting -- for a scan,
+  download, or other record that doesn't have a timestamp yet.
+
+```ts
+distanceInTime(at, relativeTo, { approximate: false }) // "15 hours ago", not "about 15 hours ago"
+distanceInTime(null, new Date(), { whenNil: 'an unknown time' }) // "an unknown time"
+```
+
+`date-fns`'s `formatDistance` uses the same ActionView wording, and is the
+better choice if you already depend on it or need months and years. It has no
+way to drop `"about"`, phrases seconds differently (`"half a minute"`), and
+continues past days into `"about 1 month"` and `"about 2 years"`.
+
+## Scope
+
+Finder's byte-count style, and a numeric (non-calendar-aware) relative time
+style through the "1 day" bucket -- that's the whole surface area today.
+Alternate size units/styles and a named style (`"yesterday"`,
+calendar-boundary-aware) aren't implemented -- contributions welcome.
+
+## Development
+
+Requires Node 22.13 or later for the dev tools; the published library itself
+runs on Node 18 and any modern browser.
+
+```
+npm install
+make test
+make check
+```
+
+`make test` prints the full nested describe/context/it output from Vitest;
+`make check` runs lint, the type check and the tests together, quietly unless
+something fails.
