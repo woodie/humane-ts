@@ -1,7 +1,8 @@
 # humane-ts
 
-[![npm](https://img.shields.io/npm/v/humane-ts.svg)](https://www.npmjs.com/package/humane-ts)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![CI](https://github.com/woodie/humane-ts/actions/workflows/ci.yml/badge.svg)](https://github.com/woodie/humane-ts/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/woodie/humane-ts.svg)](https://github.com/woodie/humane-ts/releases/latest)
 [![License](https://img.shields.io/github/license/woodie/humane-ts.svg)](LICENSE)
 
 File sizes that read exactly the way macOS Finder shows them (`"4.1 MB"`,
