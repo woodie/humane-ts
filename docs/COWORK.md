@@ -41,4 +41,9 @@ Actions: `woodie` / `humane-ts` / `ci.yml`).
 
 ## Current status
 
-`v0.1.0`, being set up.
+`v0.1.0` released on GitHub (2026-10-13), not yet on npm: Woodie's npm
+account is waiting on a password reset from npm support. CI's `publish` job
+is paused (`if: false`) so tag pushes don't fail on it. Once access is back:
+`npm publish --access public` by hand from the Mac, configure the trusted
+publisher (see "Publishing"), then restore the job's
+`if: startsWith(github.ref, 'refs/tags/v')`.
